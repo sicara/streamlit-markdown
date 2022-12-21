@@ -5,10 +5,10 @@ Test the methods in stmd.streamlit_markdown
 import pytest
 
 from stmd.streamlit_markdown import (
-    extract_image_path,
-    extract_part,
+    _extract_image_path,
+    _extract_part,
+    _split_in_parts,
     markdown,
-    split_in_parts,
 )
 
 
@@ -43,7 +43,7 @@ from stmd.streamlit_markdown import (
     ],
 )
 def test_split_in_parts(markdown_string, expected_parts):
-    assert split_in_parts(markdown_string) == expected_parts
+    assert _split_in_parts(markdown_string) == expected_parts
 
 
 @pytest.mark.parametrize("source", ["examples/simple.md", "examples/images.md"])
@@ -73,7 +73,7 @@ def test_markdown_runs_without_error_for_all_examples(source):
     ],
 )
 def test_extract_part(input_part, expected_part_type, expected_part_content):
-    assert extract_part(input_part) == (expected_part_type, expected_part_content)
+    assert _extract_part(input_part) == (expected_part_type, expected_part_content)
 
 
 @pytest.mark.parametrize(
@@ -92,4 +92,4 @@ def test_extract_part(input_part, expected_part_type, expected_part_content):
     ],
 )
 def test_extract_image_path(input_string, expected_output):
-    assert extract_image_path(input_string) == expected_output
+    assert _extract_image_path(input_string) == expected_output

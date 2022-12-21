@@ -23,12 +23,12 @@ def markdown(filepath: Union[Path, str]):
     with open(filepath, "r", encoding="UTF-8") as file:
         markdown_string = file.read()
 
-    for part in split_in_parts(markdown_string):
-        part_type, part_content = extract_part(part)
-        display_part(part_type, part_content)
+    for part in _split_in_parts(markdown_string):
+        part_type, part_content = _extract_part(part)
+        _display_part(part_type, part_content)
 
 
-def split_in_parts(markdown_string: str) -> List[str]:
+def _split_in_parts(markdown_string: str) -> List[str]:
     """
     Splits a markdown string into parts, where each part
     is either simple text or the markdown for an image.
@@ -41,7 +41,7 @@ def split_in_parts(markdown_string: str) -> List[str]:
     return list(filter(None, re.split(MARKDOWN_IMAGE_REGEX, markdown_string)))
 
 
-def extract_part(part: str) -> Tuple[str, str]:
+def _extract_part(part: str) -> Tuple[str, str]:
     """
     Extracts the type and content of a part.
     Args:
@@ -52,11 +52,11 @@ def extract_part(part: str) -> Tuple[str, str]:
         and part content (whole string for text, image path for image)
     """
     if re.match(MARKDOWN_IMAGE_REGEX, part):
-        return "image", extract_image_path(part)
+        return "image", _extract_image_path(part)
     return "text", part
 
 
-def extract_image_path(markdown_image_string: str):
+def _extract_image_path(markdown_image_string: str):
     """
     Extracts the path of an image from a markdown image string.
     Args:
@@ -73,7 +73,7 @@ def extract_image_path(markdown_image_string: str):
     raise ValueError(f"Could not extract image path from {markdown_image_string}")
 
 
-def display_part(part_type: str, part_content: str):
+def _display_part(part_type: str, part_content: str):
     """
     Displays a part in Streamlit.
     Args:
