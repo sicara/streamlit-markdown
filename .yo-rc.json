@@ -1,0 +1,10 @@
+{
+  "generator-sicarator": {
+    "promptValues": {
+      "projectDescription": "Print markdown files in Streamlit without thinking about it!",
+      "authorName": "Etienne Bennequin",
+      "authorEmail": "etienne.bennequin@gmail.com",
+      "ci": ".circleci"
+    }
+  }
+}

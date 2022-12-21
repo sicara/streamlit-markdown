@@ -1,0 +1,103 @@
+version: 2.1
+
+orbs:
+
+executors:
+  base-python:
+    working_directory: ~/stmd
+    docker:
+      - image: cimg/python:3.10.6
+
+commands:
+  get_code_and_cached_dependencies:
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - stmd-poetry-1.2.2-{{ checksum "poetry.lock" }}
+
+jobs:
+  install:
+    executor: base-python
+    steps:
+      - get_code_and_cached_dependencies
+      - run:
+          name: Update Poetry to right version
+          command: |
+            curl -sSL https://install.python-poetry.org | python - --version 1.2.2
+      - run:
+          name: Install dependencies
+          command: |
+            poetry run pip install --upgrade pip
+            poetry install
+      - save_cache:
+          key: stmd-poetry-1.2.2-{{ checksum "poetry.lock" }}
+          paths:
+            - /home/circleci/.cache/pypoetry/virtualenvs
+            - /home/circleci/.poetry/env
+
+  test:
+    executor: base-python
+    steps:
+      - get_code_and_cached_dependencies
+      - run:
+          name: run pytest
+          command: make test
+      - store_test_results:
+          path: tests-results.xml
+      - store_artifacts:
+          path: htmlcov
+
+  black:
+    executor: base-python
+    steps:
+      - get_code_and_cached_dependencies
+      - run:
+          name: run black
+          command: make black
+
+  lint:
+    executor: base-python
+    steps:
+      - get_code_and_cached_dependencies
+      - run:
+          name: run pylint
+          command: make lint
+
+  isort:
+    executor: base-python
+    steps:
+      - get_code_and_cached_dependencies
+      - run:
+          name: run isort
+          command: make isort
+
+  mypy:
+    executor: base-python
+    steps:
+      - get_code_and_cached_dependencies
+      - run:
+          name: run mypy
+          command: make mypy
+
+workflows:
+  version: 2
+  stmd:
+    jobs:
+      - install
+      - test:
+          requires:
+            - install
+      - lint:
+          requires:
+            - install
+      - black:
+          requires:
+            - install
+      - isort:
+          requires:
+            - install
+      - mypy:
+          requires:
+            - install
