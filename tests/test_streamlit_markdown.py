@@ -13,6 +13,13 @@ from stmd.streamlit_markdown import (
 
 
 @pytest.mark.parametrize(
+    "source", ["examples/simple.md", "examples/images.md", "examples/images_online.md"]
+)
+def test_markdown_runs_without_error_for_all_examples(source):
+    markdown(source)
+
+
+@pytest.mark.parametrize(
     "markdown_string, expected_parts",
     [
         (
@@ -44,11 +51,6 @@ from stmd.streamlit_markdown import (
 )
 def test_split_in_parts(markdown_string, expected_parts):
     assert _split_in_parts(markdown_string) == expected_parts
-
-
-@pytest.mark.parametrize("source", ["examples/simple.md", "examples/images.md"])
-def test_markdown_runs_without_error_for_all_examples(source):
-    markdown(source)
 
 
 @pytest.mark.parametrize(
